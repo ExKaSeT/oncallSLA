@@ -1,0 +1,16 @@
+spring.application.name: prober
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+oncall:
+  probe:
+    user-create-delete-cron: '0/10 * * ? * *'
+  api:
+    users: 'http://oncall.local/api/v0/users'
