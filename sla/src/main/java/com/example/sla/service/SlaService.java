@@ -29,7 +29,7 @@ public class SlaService {
 
         for (var metricBaseName : DURATION_METRICS_BASE_NAME) {
             var response = prometheusService
-                    .request(String.format("increase(%s_sum{exception=\"none\"}[1m])/increase(%s_count{exception=\"none\"})[1m]",
+                    .request(String.format("increase(%s_sum{exception=\"none\"}[1m])/increase(%s_count{exception=\"none\"}[1m])",
                             metricBaseName, metricBaseName));
             double value;
             try {
