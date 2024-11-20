@@ -1,6 +1,6 @@
-package com.example.prober.config;
+package com.example.sla.config;
 
-import com.example.prober.service.OncallService;
+import com.example.sla.service.SlaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -13,15 +13,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 @RequiredArgsConstructor
 public class SchedulingConfig {
 
-    private final OncallService oncallService;
+    private final SlaService slaService;
 
-    @Scheduled(cron = "${oncall.probe.user-create-delete-cron}")
-    public void createDeleteUser() {
+    @Scheduled(cron = "${oncall.sla.cron}")
+    public void getDurationMetrics() {
         try {
-            oncallService.createUser("kek");
-            log.info("User created");
-            oncallService.deleteUser("kek");
-            log.info("User deleted");
+            slaService.saveSlaDurationMetrics();
         } catch (Exception ex) {
             log.error(ex.getMessage());
         }

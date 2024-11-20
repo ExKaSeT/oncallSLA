@@ -14,14 +14,24 @@ public class OncallService {
 
     private final RestClient restClient;
 
-    @Value("${oncall.api.users}")
-    private String usersURI;
+    @Value("${oncall.api.users-host}")
+    private String usersHost;
+
+    @Value("${oncall.api.users-path}")
+    private String usersPath;
+
+    @Value("${oncall.api.users-port}")
+    private String usersPort;
 
     @Timed("oncall.create.user")
     @Counted("oncall.create.user")
     public void createUser(String username) {
         restClient.post()
-                .uri(usersURI)
+                .uri(uri -> uri.host(usersHost)
+                        .path(usersPath)
+                        .port(usersPort)
+                        .scheme("http")
+                        .build())
                 .body(new CreateUserDto(username))
                 .retrieve()
                 .toBodilessEntity();
@@ -31,7 +41,11 @@ public class OncallService {
     @Counted("oncall.delete.user")
     public void deleteUser(String username) {
         restClient.delete()
-                .uri(usersURI + "/" + username)
+                .uri(uri -> uri.host(usersHost)
+                        .path(String.format("%s/%s", usersPath, username))
+                        .port(usersPort)
+                        .scheme("http")
+                        .build())
                 .retrieve()
                 .toBodilessEntity();
     }

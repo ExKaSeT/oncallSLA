@@ -13,4 +13,6 @@ oncall:
   probe:
     user-create-delete-cron: '0/10 * * ? * *'
   api:
-    users: 'http://oncall.local/api/v0/users'
+    users-host: 'oncall.local'
+    users-path: '/api/v0/users'
+    users-port: 80
