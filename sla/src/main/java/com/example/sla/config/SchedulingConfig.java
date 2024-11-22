@@ -19,6 +19,7 @@ public class SchedulingConfig {
     public void getDurationMetrics() {
         try {
             slaService.saveSlaDurationMetrics();
+            log.info("SLA подсчитан");
         } catch (Exception ex) {
             log.error(ex.getMessage());
         }
