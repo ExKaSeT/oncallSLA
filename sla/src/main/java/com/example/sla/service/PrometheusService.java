@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.time.Instant;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +20,11 @@ public class PrometheusService {
 
     public PrometheusResponse request(String query) {
         return restClient.get()
-                .uri(uri -> uri.host(prometheusHost).path("/api/v1/query")
-                        .queryParam("query", query)
-                        .queryParam("time", Instant.now())
-                        .build())
+                .uri(prometheusHost, uri -> uri.path("/api/v1/query?query={query}&time={time}")
+                        .build(Map.of(
+                                "query", query,
+                                "time", Instant.now().getEpochSecond()
+                        )))
                 .retrieve()
                 .body(PrometheusResponse.class);
     }

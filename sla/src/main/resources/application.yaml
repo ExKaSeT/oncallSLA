@@ -3,7 +3,7 @@ spring:
     name: sla
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/oncall
+    url: 'jdbc:mysql://localhost:3306/oncall?createDatabaseIfNotExist=true'
     username: root
     password: 1234
   jpa:

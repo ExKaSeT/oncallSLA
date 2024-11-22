@@ -11,7 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.Objects.isNull;
 
 @Service
 @Slf4j
@@ -19,6 +23,8 @@ import java.util.List;
 public class SlaService {
 
     private static final List<String> DURATION_METRICS_BASE_NAME = List.of("oncall_delete_user_seconds", "oncall_create_user_seconds");
+    Map<String, Gauge> metricNameValue = new HashMap<>();
+
     private static final int DURATION_SLO_SEC = 1;
 
     private final PrometheusService prometheusService;
@@ -38,7 +44,15 @@ public class SlaService {
                 log.error(ex.getMessage());
                 continue;
             }
-            Gauge.build().name(metricBaseName).register(collectorRegistry).set(value);
+            var gauge = metricNameValue.get(metricBaseName);
+            if (isNull(gauge)) {
+                gauge = Gauge.build()
+                        .name(metricBaseName)
+                        .help(metricBaseName)
+                        .register(collectorRegistry);
+                metricNameValue.put(metricBaseName, gauge);
+            }
+            gauge.set(value);
             var indicator = new Indicator();
             indicator.setBad(value > DURATION_SLO_SEC);
             indicator.setValue(value);
