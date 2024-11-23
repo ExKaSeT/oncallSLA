@@ -44,20 +44,21 @@ public class SlaService {
                 log.error(ex.getMessage());
                 continue;
             }
-            var gauge = metricNameValue.get(metricBaseName);
+            var gaugeName = "sla_" + metricBaseName;
+            var gauge = metricNameValue.get(gaugeName);
             if (isNull(gauge)) {
                 gauge = Gauge.build()
-                        .name(metricBaseName)
-                        .help(metricBaseName)
+                        .name(gaugeName)
+                        .help(gaugeName)
                         .register(collectorRegistry);
-                metricNameValue.put(metricBaseName, gauge);
+                metricNameValue.put(gaugeName, gauge);
             }
             gauge.set(value);
             var indicator = new Indicator();
             indicator.setBad(value > DURATION_SLO_SEC);
             indicator.setValue(value);
             indicator.setSlo(DURATION_SLO_SEC);
-            indicator.setId(new IndicatorId(metricBaseName, Instant.now().atZone(ZoneId.of("Z"))
+            indicator.setId(new IndicatorId(gaugeName, Instant.now().atZone(ZoneId.of("Z"))
                     .toLocalDateTime()));
             indicatorRepository.save(indicator);
         }
